@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Card from './components/card';
 
 const App = () => {
   const [checkedBoxes, setCheckedBoxes] = useState(Array(7).fill(false));
@@ -14,6 +15,11 @@ const App = () => {
       setActiveCards(prev => [...prev, index]);
     } else {
       setActiveCards(prev => prev.filter(idx => idx !== index));
+      setCardData(prevData => {
+        const updatedData = [...prevData];
+        updatedData[index] = '';
+        return updatedData;
+      });
     }
   };
 
@@ -54,11 +60,22 @@ const App = () => {
           <div key={index} className="flex items-center">
             <input
               type="checkbox"
+              name={`checkbox-${index}`}
               checked={isChecked}
               onChange={() => toggleCheckbox(index)}
               className="mr-2"
             />
-            <label className='flex items-center'><span className='hidden md:block mr-1 md:text-sm lg:text-base'>Checkbox</span> {index + 1}</label>
+            <label className='flex items-center'>
+              <span className='hidden md:block mr-1 md:text-sm lg:text-base'>Checkbox</span> {index + 1}
+            </label>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl">
+        {activeCards.map((index) => (
+          <div key={index} className="flex items-center justify-center">
+            <Card index={index} content={cardData[index]} />
           </div>
         ))}
       </div>
