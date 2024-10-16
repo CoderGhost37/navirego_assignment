@@ -28,6 +28,11 @@ const App = () => {
       try {
         const res = await fetch(`https://navirego-interview.vercel.app/api/letters/${index}`);
         const data = await res.json();
+
+        if (!data || !data.letter) {
+          return;
+        }
+
         const newLetter = data.letter;
 
         setCardData(prevData => {
