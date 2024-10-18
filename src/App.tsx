@@ -4,7 +4,7 @@ import Card from './components/card';
 const App = () => {
   const [checkedBoxes, setCheckedBoxes] = useState(Array(7).fill(false));
   const [activeCards, setActiveCards] = useState<number[]>([]);
-  const [cardData, setCardData] = useState(Array(7).fill(''));
+  const [cardData, setCardData] = useState(Array(7).fill([]));
 
   const toggleCheckbox = (index: number) => {
     const updatedBoxes = [...checkedBoxes];
@@ -23,21 +23,36 @@ const App = () => {
     }
   };
 
+  const getRandomColor = () => {
+    const colorArr = ['red', 'blue', 'green'];
+
+    const randomIndx = Math.floor(Math.random() * 3);
+    return colorArr[randomIndx];
+  }
+
   useEffect(() => {
     const fetchData = async (index: number) => {
       try {
         const res = await fetch(`https://navirego-interview.vercel.app/api/letters/${index}`);
         const data = await res.json();
 
-        if (!data || !data.letter) {
-          return;
-        }
+        // if (!data || !data.letter) {
+        //   return;
+        // }
 
         const newLetter = data.letter;
 
         setCardData(prevData => {
           const updatedData = [...prevData];
-          updatedData[index] = (updatedData[index] + newLetter).slice(-30);
+          // let cardData = updatedData[index]
+          if (newLetter) {
+            const cardData = [...updatedData[index], { data: newLetter, color: getRandomColor() }].slice(-30);
+            updatedData[index] = cardData;
+          } else {
+            const cardData = [...updatedData[index], { data: '_', color: getRandomColor() }].slice(-30);
+            updatedData[index] = cardData;
+            // cardData.push({ data: '_', color: getRandomColor() })
+          }
           return updatedData;
         });
       } catch (error) {
